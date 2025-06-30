@@ -1,0 +1,14 @@
+* {
+  padding: 0;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100svh; /* for mobile so the view port automatically accounts for the address bar going up and down*/
+  /* this is to make the rest of the page a flex container that way the bottom of the content will grow if its not big enough to fill the page */
+  display: flex;
+  /* same with this*/
+  flex-direction: column;
+}
