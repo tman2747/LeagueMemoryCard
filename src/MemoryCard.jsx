@@ -12,6 +12,7 @@ function getChamp() {
 }
 
 function addSeenChamp() {}
+function checkChamp() {}
 
 async function getImage() {
   let [champName, champImage] = getChamp();
@@ -19,15 +20,23 @@ async function getImage() {
     `https://ddragon.leagueoflegends.com/cdn/${LEAGUEVERSION}/img/champion/${champImage}`
   );
   Math.round(Math.random() * Object.keys(ChampionJson.data));
-  return [champName, Image.url];
+  return { Name: champName, ImageUrl: Image.url };
+}
+
+async function getChampList() {
+  let champList = [];
+  for (let index = 0; index < 10; index++) {
+    champList[index] = await getImage();
+  }
+  console.log(champList);
+  return champList;
 }
 
 function MemoryCard() {
-  const [info, setInfo] = useState({ name: null, image: null });
-  console.log(info);
+  const [info, setInfo] = useState({ name: null, image: null, Seen: false });
   useEffect(() => {
     getImage().then((champ) => {
-      setInfo(() => ({ name: champ[0], image: champ[1] }));
+      setInfo(() => ({ name: champ.name, image: champ.ImageUrl }));
     });
   }, []);
 
@@ -43,5 +52,5 @@ function MemoryCard() {
     </>
   );
 }
-
+getChampList();
 export default MemoryCard;
