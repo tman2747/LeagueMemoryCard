@@ -12,31 +12,35 @@ function getChamp() {
 }
 
 function addSeenChamp() {}
-function checkChamp() {}
+function checkChampSeen() {}
 
 async function getImage() {
   let [champName, champImage] = getChamp();
   let Image = await fetch(
     `https://ddragon.leagueoflegends.com/cdn/${LEAGUEVERSION}/img/champion/${champImage}`
   );
-  Math.round(Math.random() * Object.keys(ChampionJson.data));
+  Math.round(Math.random() * Object.keys(ChampionJson.data)); // currently this can give me a out of bound index
   return { Name: champName, ImageUrl: Image.url };
 }
 
 async function getChampList() {
+  console.log("function called");
   let champList = [];
   for (let index = 0; index < 10; index++) {
     champList[index] = await getImage();
   }
-  console.log(champList);
   return champList;
 }
 
 function MemoryCard() {
-  const [info, setInfo] = useState({ name: null, image: null, Seen: false });
-  useEffect(() => {
-    getImage().then((champ) => {
-      setInfo(() => ({ name: champ.name, image: champ.ImageUrl }));
+  const [info, setInfo] = useState([
+    { name: null, ImageUrl: null, Seen: false },
+  ]);
+  useEffect((prev) => {
+    getChampList().then((champ) => {
+      setInfo((i) => {
+        return champ;
+      });
     });
   }, []);
 
@@ -46,11 +50,14 @@ function MemoryCard() {
       <div>Picture Area</div>
       <div className="pictureContainer">
         <div className="picture">
-          <img src={info.image} alt="" />
+          {info.map((item, index) => (
+            <div key={index}>
+              <img src={item.ImageUrl} alt="" />
+            </div> // need to change key this probably doesnt work. add key to the object probably in get champlist
+          ))}
         </div>
       </div>
     </>
   );
 }
-getChampList();
 export default MemoryCard;
