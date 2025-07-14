@@ -11,7 +11,6 @@ function getChamp() {
   return [champName, champImage];
 }
 
-function addSeenChamp() {}
 function checkChampSeen() {}
 
 async function getImage() {
@@ -20,40 +19,59 @@ async function getImage() {
     `https://ddragon.leagueoflegends.com/cdn/${LEAGUEVERSION}/img/champion/${champImage}`
   );
   Math.round(Math.random() * Object.keys(ChampionJson.data)); // currently this can give me a out of bound index
-  return { Name: champName, ImageUrl: Image.url };
+  return { Name: champName, ImageUrl: Image.url, Seen: false };
 }
 
 async function getChampList() {
-  console.log("function called");
   let champList = [];
   for (let index = 0; index < 10; index++) {
     champList[index] = await getImage();
+    champList[index].id = index;
   }
   return champList;
 }
 
 function MemoryCard() {
-  const [info, setInfo] = useState([
-    { name: null, ImageUrl: null, Seen: false },
-  ]);
-  useEffect((prev) => {
+  const [info, setInfo] = useState([]);
+  useEffect(() => {
     getChampList().then((champ) => {
-      setInfo((i) => {
+      setInfo(() => {
         return champ;
       });
     });
   }, []);
 
+  function addSeenChamp(target) {
+    console.log("called");
+    setInfo(
+      info.map((element) => {
+        if (element.id == target.id) {
+          return { ...element, Seen: true };
+        } else {
+          return element;
+        }
+      })
+    );
+    console.log(info);
+  }
   return (
     <>
       <div>hello</div>
       <div>Picture Area</div>
       <div className="pictureContainer">
         <div className="picture">
-          {info.map((item, index) => (
-            <div key={index}>
-              <img src={item.ImageUrl} alt="" />
-            </div> // need to change key this probably doesnt work. add key to the object probably in get champlist
+          {info.map((item) => (
+            <div key={item.id}>
+              <p>
+                {"ID: " + item.id} {"Champ Name: " + item.Name} {item.ImageUrl}{" "}
+                {item.Seen ? "true" : "false"}
+              </p>
+              <img
+                onClick={() => addSeenChamp(item)}
+                src={item.ImageUrl}
+                alt=""
+              />
+            </div>
           ))}
         </div>
       </div>
