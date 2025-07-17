@@ -11,8 +11,6 @@ function getChamp() {
   return [champName, champImage];
 }
 
-function checkChampSeen() {}
-
 async function getImage() {
   let [champName, champImage] = getChamp();
   let Image = await fetch(
@@ -28,11 +26,13 @@ async function getChampList() {
     champList[index] = await getImage();
     champList[index].id = index;
   }
+  // await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate lag // currently 1 second
   return champList;
 }
 
 function MemoryCard() {
   const [info, setInfo] = useState([]);
+  const [score, setScore] = useState(0);
   useEffect(() => {
     getChampList().then((champ) => {
       setInfo(() => {
@@ -41,33 +41,47 @@ function MemoryCard() {
     });
   }, []);
 
-  function addSeenChamp(target) {
-    console.log("called");
-    setInfo(
-      info.map((element) => {
+  function shuffleChamps() {
+    let arr = info.slice(); // create a copy to avoid mutating the original
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1)); // pick a random index
+      [arr[i], arr[j]] = [arr[j], arr[i]]; // swap elements
+    }
+    return arr;
+  }
+
+  function onClickChamp(target) {
+    if (target.Seen == true) {
+      console.log("you've already seen this champ");
+      setScore(0);
+      return;
+    }
+    setScore((score) => score + 1);
+    setInfo(() => {
+      let arr = shuffleChamps();
+      console.log(arr);
+      const returnValue = arr.map((element) => {
         if (element.id == target.id) {
           return { ...element, Seen: true };
-        } else {
-          return element;
-        }
-      })
-    );
-    console.log(info);
+        } else return element;
+      });
+      return returnValue;
+    });
   }
   return (
     <>
-      <div>hello</div>
+      <div>Score: {score}</div>
       <div>Picture Area</div>
       <div className="pictureContainer">
         <div className="picture">
           {info.map((item) => (
-            <div key={item.id}>
+            <div key={item.id} className="champPicture">
               <p>
                 {"ID: " + item.id} {"Champ Name: " + item.Name} {item.ImageUrl}{" "}
                 {item.Seen ? "true" : "false"}
               </p>
               <img
-                onClick={() => addSeenChamp(item)}
+                onClick={() => onClickChamp(item)}
                 src={item.ImageUrl}
                 alt=""
               />

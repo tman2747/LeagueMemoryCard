@@ -12,3 +12,12 @@ body {
   /* same with this*/
   flex-direction: column;
 }
+
+.picture {
+  display: flex;
+  flex-wrap: wrap;
+}
+.champPicture {
+  width: 128px;
+  height: 200px;
+}
