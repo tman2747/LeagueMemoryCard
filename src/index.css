@@ -11,6 +11,10 @@ body {
   display: flex;
   /* same with this*/
   flex-direction: column;
+  background: url(./assets/background.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .picture {
