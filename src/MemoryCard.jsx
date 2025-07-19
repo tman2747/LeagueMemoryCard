@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import ChampionJson from "./assets/champion.json";
 const key = import.meta.env.VITE_API_KEY;
 const LEAGUEVERSION = "15.13.1";
+const numberOfChamps = 15;
 
 function getChamp() {
   let champName = Object.keys(ChampionJson.data)[
     Math.round(Math.random() * Object.keys(ChampionJson.data).length)
   ];
-  let champImage = ChampionJson.data[champName].image.full;
+  let champImage = ChampionJson.data[champName].image.full; // can currently get dupes of the same champ
   return [champName, champImage];
 }
 
@@ -22,11 +23,11 @@ async function getImage() {
 
 async function getChampList() {
   let champList = [];
-  for (let index = 0; index < 10; index++) {
+  for (let index = 0; index < numberOfChamps; index++) {
     champList[index] = await getImage();
     champList[index].id = index;
   }
-  // await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate lag // currently 1 second
+  //await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate lag // currently 1 second
   return champList;
 }
 
@@ -70,23 +71,20 @@ function MemoryCard() {
   }
   return (
     <>
-      <div>Score: {score}</div>
-      <div>Picture Area</div>
-      <div className="pictureContainer">
-        <div className="picture">
-          {info.map((item) => (
-            <div key={item.id} className="champPicture">
-              <p>
-                {"ID: " + item.id} {"Champ Name: " + item.Name} {item.ImageUrl}{" "}
-                {item.Seen ? "true" : "false"}
-              </p>
-              <img
-                onClick={() => onClickChamp(item)}
-                src={item.ImageUrl}
-                alt=""
-              />
-            </div>
-          ))}
+      <div className="app">
+        <div className="score">Score: {score}</div>
+        <div className="pictureContainer">
+          <div className="picture">
+            {info.map((item) => (
+              <div key={item.id} className="champPicture">
+                <img
+                  onClick={() => onClickChamp(item)}
+                  src={item.ImageUrl}
+                  alt=""
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>
