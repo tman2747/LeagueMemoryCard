@@ -31,6 +31,9 @@ body {
   height: 128px;
   margin: 4px;
 }
+.champPicture:hover {
+  filter: brightness(1.2);
+}
 .pictureContainer {
   /* From https://css.glass */
   background: rgba(0, 70, 7, 0.445);
@@ -44,4 +47,20 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+@media (min-width: 751px) {
+  .scoreWrapper {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 10px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 750px) {
+  .scoreWrapper {
+    display: flex;
+    flex-direction: column;
+  }
 }

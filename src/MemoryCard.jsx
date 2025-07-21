@@ -77,8 +77,10 @@ function MemoryCard() {
   return (
     <>
       <div className="app">
-        <div className="highScore">High Score: {highScore}</div>
-        <div className="score">Score: {score}</div>
+        <div className="scoreWrapper">
+          <div className="highScore score">High Score: {highScore}</div>
+          <div className="score">Score: {score}</div>
+        </div>
         <div className="pictureContainer">
           <div className="picture">
             {info.map((item) => (
