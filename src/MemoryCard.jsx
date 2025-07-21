@@ -34,6 +34,7 @@ async function getChampList() {
 function MemoryCard() {
   const [info, setInfo] = useState([]);
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
   useEffect(() => {
     getChampList().then((champ) => {
       setInfo(() => {
@@ -58,6 +59,10 @@ function MemoryCard() {
       return;
     }
     setScore((score) => score + 1);
+
+    if (score >= highScore) {
+      setHighScore(highScore + 1);
+    }
     setInfo(() => {
       let arr = shuffleChamps();
       console.log(arr);
@@ -72,6 +77,7 @@ function MemoryCard() {
   return (
     <>
       <div className="app">
+        <div className="highScore">High Score: {highScore}</div>
         <div className="score">Score: {score}</div>
         <div className="pictureContainer">
           <div className="picture">
