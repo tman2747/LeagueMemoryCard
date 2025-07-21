@@ -6,7 +6,7 @@ const numberOfChamps = 15;
 
 function getChamp() {
   let champName = Object.keys(ChampionJson.data)[
-    Math.round(Math.random() * Object.keys(ChampionJson.data).length)
+    Math.floor(Math.random() * Object.keys(ChampionJson.data).length)
   ];
   let champImage = ChampionJson.data[champName].image.full; // can currently get dupes of the same champ
   return [champName, champImage];
@@ -17,15 +17,20 @@ async function getImage() {
   let Image = await fetch(
     `https://ddragon.leagueoflegends.com/cdn/${LEAGUEVERSION}/img/champion/${champImage}`
   );
-  Math.round(Math.random() * Object.keys(ChampionJson.data)); // currently this can give me a out of bound index
+  Math.floor(Math.random() * Object.keys(ChampionJson.data)); // currently this can give me a out of bound index
   return { Name: champName, ImageUrl: Image.url, Seen: false };
 }
 
 async function getChampList() {
   let champList = [];
-  for (let index = 0; index < numberOfChamps; index++) {
-    champList[index] = await getImage();
-    champList[index].id = index;
+  let index = 0;
+  while (champList.length < numberOfChamps) {
+    let champ = await getImage();
+    if (!champList.some((newchamp) => newchamp.Name === champ.Name)) {
+      champList.push(champ);
+      champ.id = index;
+      index++;
+    }
   }
   //await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate lag // currently 1 second
   return champList;
@@ -35,13 +40,14 @@ function MemoryCard() {
   const [info, setInfo] = useState([]);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
+  const [triggerReset, setResetTrigger] = useState(0);
   useEffect(() => {
     getChampList().then((champ) => {
       setInfo(() => {
         return champ;
       });
     });
-  }, []);
+  }, [triggerReset]);
 
   function shuffleChamps() {
     let arr = info.slice(); // create a copy to avoid mutating the original
@@ -80,6 +86,7 @@ function MemoryCard() {
         <div className="scoreWrapper">
           <div className="highScore score">High Score: {highScore}</div>
           <div className="score">Score: {score}</div>
+          <div> </div>
         </div>
         <div className="pictureContainer">
           <div className="picture">
@@ -94,6 +101,9 @@ function MemoryCard() {
             ))}
           </div>
         </div>
+        <button onClick={() => setResetTrigger((prev) => prev + 1)}>
+          Reset Board
+        </button>
       </div>
     </>
   );
